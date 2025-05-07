@@ -127,7 +127,9 @@ class TerminalController extends ChangeNotifier {
   final Map<String, ValueNotifier<String>> _terminalOutput = {};
   // Map to store start times for each service, keyed by service ID
   final Map<String, DateTime> _startTimes = {};
-
+  // Notifier for the auto-scroll feature state
+  final ValueNotifier<bool> autoScrollToEnd = ValueNotifier<bool>(true);
+ 
   // List to store all configured services
   List<Service> _services = [];
   // Getter to access the services list from outside
@@ -665,7 +667,16 @@ class TerminalController extends ChangeNotifier {
     return _terminalOutput[serviceId];
   }
  
-
+  // Getter to check if auto-scroll is enabled
+  bool get isAutoScrollEnabled => autoScrollToEnd.value;
+ 
+  // Method to toggle the auto-scroll feature
+  void toggleAutoScroll() {
+    autoScrollToEnd.value = !autoScrollToEnd.value;
+    notifyListeners(); // Notify listeners to rebuild UI if needed (e.g., the switch itself)
+  }
+  
+ 
   // Start a service process
   // Added forceStart parameter
   Future<bool> startService(Service service, {bool forceStart = false}) async {
@@ -1126,6 +1137,7 @@ class TerminalController extends ChangeNotifier {
       notifier.dispose();
     });
     _terminalOutput.clear();
+    autoScrollToEnd.dispose(); // Dispose the auto-scroll notifier
     super.dispose();
   }
 }

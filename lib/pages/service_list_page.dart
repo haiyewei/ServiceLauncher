@@ -907,6 +907,8 @@ class _ServiceListPageState extends State<ServiceListPage> {
       return;
     }
 
+    final ScrollController scrollController = ScrollController();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -918,8 +920,20 @@ class _ServiceListPageState extends State<ServiceListPage> {
             child: ValueListenableBuilder<String>(
               valueListenable: outputNotifier,
               builder: (context, output, child) {
+                if (terminalController.autoScrollToEnd.value) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (scrollController.hasClients) {
+                      scrollController.animateTo(
+                        scrollController.position.maxScrollExtent,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeOut,
+                      );
+                    }
+                  });
+                }
                 // Use a SingleChildScrollView and SelectableText for scrollable and selectable output
                 return SingleChildScrollView(
+                  controller: scrollController, // Assign the scroll controller
                   child: SelectableText(
                     output,
                     style: const TextStyle(fontFamily: 'monospace'), // Use a monospace font
@@ -929,16 +943,44 @@ class _ServiceListPageState extends State<ServiceListPage> {
             ),
           ),
           actions: <Widget>[
+            ValueListenableBuilder<bool>(
+              valueListenable: terminalController.autoScrollToEnd,
+              builder: (context, isAutoScrollOn, child) {
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('自动滚动:', style: Theme.of(context).textTheme.bodySmall),
+                    const SizedBox(width: 4),
+                    Switch(
+                      value: isAutoScrollOn,
+                      onChanged: (bool value) {
+                        terminalController.toggleAutoScroll();
+                      },
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                  ],
+                );
+              },
+            ),
+            const Spacer(), // Pushes the close button to the right
             TextButton(
               child: const Text('关闭'), // Close
               onPressed: () {
                 Navigator.of(context).pop();
+                // It's good practice to dispose controllers, but AlertDialog doesn't have a direct dispose.
+                // For short-lived dialogs, it's often okay. If issues, convert dialog to StatefulWidget.
+                // For now, we'll let it be garbage collected.
+                // scrollController.dispose(); // This would be ideal if we had a clear place.
               },
             ),
           ],
         );
       },
-    );
+    ).then((_) {
+      // Dispose the scrollController when the dialog is closed.
+      // This .then() callback executes after the dialog is popped.
+      scrollController.dispose();
+    });
   }
 
   // No need for dispose method here anymore
