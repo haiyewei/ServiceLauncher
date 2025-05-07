@@ -128,11 +128,11 @@ flutter:
   fonts:
     - family: Roboto
       fonts:
-        - asset: lib/themes/fonts/Roboto-VariableFont_wdth,wght.ttf
+        - asset: assets/fonts/Roboto-VariableFont_wdth,wght.ttf
           style: normal
           weight: 400
     - family: NotoSansSC
       fonts:
-        - asset: lib/themes/fonts/NotoSansSC-VariableFont_wght.ttf
+        - asset: assets/fonts/NotoSansSC-VariableFont_wght.ttf
           style: normal
           weight: 400
