@@ -914,63 +914,68 @@ class _ServiceListPageState extends State<ServiceListPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('${service.name} - 终端输出'), // Service Name - Terminal Output
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-            height: MediaQuery.of(context).size.height * 0.6, // 60% of screen height
-            child: ValueListenableBuilder<String>(
-              valueListenable: outputNotifier,
-              builder: (context, output, child) {
-                if (terminalController.autoScrollToEnd.value) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (scrollController.hasClients) {
-                      scrollController.animateTo(
-                        scrollController.position.maxScrollExtent,
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeOut,
-                      );
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch, // Make column children stretch horizontally
+            children: [
+              ValueListenableBuilder<bool>(
+                valueListenable: terminalController.autoScrollToEnd,
+                builder: (context, isAutoScrollOn, child) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.end, // Align to the right
+                    children: [
+                      Text('自动滚动:', style: Theme.of(context).textTheme.bodySmall),
+                      const SizedBox(width: 4),
+                      Switch(
+                        value: isAutoScrollOn,
+                        onChanged: (bool value) {
+                          terminalController.toggleAutoScroll();
+                        },
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 8), // Space between switch and output
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                height: MediaQuery.of(context).size.height * 0.55, // Adjusted height
+                child: ValueListenableBuilder<String>(
+                  valueListenable: outputNotifier,
+                  builder: (context, output, child) {
+                    if (terminalController.autoScrollToEnd.value) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (scrollController.hasClients) {
+                          scrollController.animateTo(
+                            scrollController.position.maxScrollExtent,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                          );
+                        }
+                      });
                     }
-                  });
-                }
-                // Use a SingleChildScrollView and SelectableText for scrollable and selectable output
-                return SingleChildScrollView(
-                  controller: scrollController, // Assign the scroll controller
-                  child: SelectableText(
-                    output,
-                    style: const TextStyle(fontFamily: 'monospace'), // Use a monospace font
-                  ),
-                );
-              },
-            ),
+                    // Use a SingleChildScrollView and SelectableText for scrollable and selectable output
+                    return SingleChildScrollView(
+                      controller: scrollController, // Assign the scroll controller
+                      child: SelectableText(
+                        output,
+                        style: const TextStyle(fontFamily: 'monospace'), // Use a monospace font
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
           actions: <Widget>[
-            ValueListenableBuilder<bool>(
-              valueListenable: terminalController.autoScrollToEnd,
-              builder: (context, isAutoScrollOn, child) {
-                return Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('自动滚动:', style: Theme.of(context).textTheme.bodySmall),
-                    const SizedBox(width: 4),
-                    Switch(
-                      value: isAutoScrollOn,
-                      onChanged: (bool value) {
-                        terminalController.toggleAutoScroll();
-                      },
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                  ],
-                );
-              },
-            ),
-            const Spacer(), // Pushes the close button to the right
+            // The Spacer is no longer needed here if the "Close" button is the only primary action on the right.
+            // AlertDialog by default aligns actions to the end (right).
             TextButton(
               child: const Text('关闭'), // Close
               onPressed: () {
                 Navigator.of(context).pop();
-                // It's good practice to dispose controllers, but AlertDialog doesn't have a direct dispose.
-                // For short-lived dialogs, it's often okay. If issues, convert dialog to StatefulWidget.
-                // For now, we'll let it be garbage collected.
-                // scrollController.dispose(); // This would be ideal if we had a clear place.
+                // scrollController.dispose(); // Disposed in .then()
               },
             ),
           ],

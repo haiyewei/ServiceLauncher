@@ -19,22 +19,42 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 0.0.1+1
 
 flutter_launcher_icons:
-  android: true
-  ios: true
+  # 关闭 Android 和 iOS 的图标生成
+  android: false
+  ios: false
+  # 如果 ios: false, remove_alpha_ios: true 这行就没有意义了，可以移除
+  # remove_alpha_ios: true
+
+  # 全局默认的图标源文件路径，除非平台单独指定
   image_path: "assets/icons/app_icon.png"
-  remove_alpha_ios: true # 通常建议移除 iOS 图标的 alpha 通道
+
+  # Windows 图标配置
   windows:
     generate: true
-    image_path: "assets/icons/app_icon.png" # Windows 可能需要单独指定 ICO，但我们先用 PNG
-    icon_size: 256 # Windows 图标大小
+    # image_path: "assets/icons/app_icon.png" # 如果与全局 image_path 相同，可以省略此行
+    icon_size: 256 # Windows 图标大小 (通常需要一个较大的尺寸，这里使用 256)
+    # icon_path: "assets/icons/app_icon.ico" # 如果有现成的 .ico 文件，可以指定 ico_path 代替 image_path
+
+  # Web 图标配置 (通常用于 Favicon)
   web:
     generate: true
-    image_path: "assets/icons/app_icon.png"
-    favicon_path: "assets/icons/app_icon.png"
+    # image_path: "assets/icons/app_icon.png" # 如果与全局 image_path 相同，可以省略此行
+    favicon_path: "assets/icons/app_icon.png" # Favicon 通常也使用同一个源文件，如果与 image_path 相同，可以省略，但明确指定更清晰
+
+  # macOS 图标配置
   macos:
     generate: true
-    image_path: "assets/icons/app_icon.png"
+    # image_path: "assets/icons/app_icon.png" # 如果与全局 image_path 相同，可以省略此行
+    # icns_path: "assets/icons/app_icon.icns" # 如果你有现成的 .icns 文件，可以指定 icns_path 代替 image_path
 
+  # 新增 Linux 图标配置
+  linux:
+    generate: true
+    # image_path: "assets/icons/app_icon.png" # 如果与全局 image_path 相同，可以省略此行
+    # 可以为 Linux 指定一个 .png 源文件，或者如果你有 Linux 特定的图标文件格式（如 .svg 或其他），可以查阅 flutter_launcher_icons 文档看是否支持或有特定选项。通常提供一个高分辨率 PNG 就足够让工具生成 Linux 需要的各种尺寸的 PNG 图标文件。
+    # 例如，一些 Linux 配置可能需要的额外选项：
+    # main_dart_file: "lib/main.dart" # 可选：指定主 Dart 文件
+    # icon_size: 256 # Linux 图标大小（可选，默认会生成多种尺寸）
 environment:
   sdk: ^3.7.0
 
