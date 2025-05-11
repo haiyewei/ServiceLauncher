@@ -72,7 +72,7 @@ class _ServiceListPageState extends State<ServiceListPage> {
       builder:
           (dialogContext) => AlertDialog(
             // Use dialogContext inside builder
-            title: const Text('导入服务'), // Import Service
+            title: const Text('引入服务'), // Import Service
             content: StatefulBuilder(
               // Use StatefulBuilder to update dialog content
               builder: (BuildContext context, StateSetter setStateDialog) {
@@ -132,12 +132,12 @@ class _ServiceListPageState extends State<ServiceListPage> {
                                     String? selectedDir =
                                         await FilePicker.platform
                                             .getDirectoryPath();
-                                    if (selectedDir != null) {
-                                      setStateDialog(() {
+                                    setStateDialog(() {
+                                      if (selectedDir != null) {
                                         servicePathController.text = selectedDir;
-                                      });
-                                    }
-                                  },
+                                      }
+                                    });
+                                                                    },
                                   child: const Text('选择目录'), // Select Directory
                                 ),
                               ],
@@ -281,7 +281,7 @@ class _ServiceListPageState extends State<ServiceListPage> {
       builder:
           (dialogContext) => AlertDialog(
             // Use dialogContext inside builder
-            title: const Text('添加服务'), // Add Service
+            title: const Text('导入服务'), // Add Service
             content: StatefulBuilder(
               // Use StatefulBuilder to update dialog content
               builder: (BuildContext context, StateSetter setStateDialog) {
@@ -341,12 +341,12 @@ class _ServiceListPageState extends State<ServiceListPage> {
                                     String? selectedDir =
                                         await FilePicker.platform
                                             .getDirectoryPath();
-                                    if (selectedDir != null) {
-                                      setStateDialog(() {
+                                    setStateDialog(() {
+                                      if (selectedDir != null) {
                                         servicePathController.text = selectedDir;
-                                      });
-                                    }
-                                  },
+                                      }
+                                    });
+                                                                    },
                                   child: const Text('选择目录'), // Select Directory
                                 ),
                               ],
@@ -690,12 +690,12 @@ class _ServiceListPageState extends State<ServiceListPage> {
                     ElevatedButton.icon(
                       icon: const Icon(Icons.input),
                       onPressed: _isDeleteModeActive ? null : _importService, // Disable in delete mode
-                      label: const Text('导入服务'),
+                      label: const Text('引入服务'),
                     ),
                     ElevatedButton.icon(
                       icon: const Icon(Icons.add_circle_outline),
                       onPressed: _isDeleteModeActive ? null : _addService, // Disable in delete mode
-                      label: const Text('添加服务'),
+                      label: const Text('导入服务'),
                     ),
                   ],
                 ),

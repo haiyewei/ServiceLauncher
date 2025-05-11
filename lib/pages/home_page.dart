@@ -7,7 +7,7 @@ import '../components/side_bar.dart';
 import '../themes/theme_manager.dart';
 import 'dashboard_page.dart';
 import 'settings_page.dart';
-import 'service_list_page.dart'; // 导入服务列表页面
+import 'service_list_page.dart'; // 引入服务列表页面
 
 // 全局键，用于在任何位置获取HomePageState
 final GlobalKey<HomePageState> homePageKey = GlobalKey<HomePageState>();
@@ -33,7 +33,7 @@ class HomePageState extends State<HomePage> {
   // 页面列表
   final List<Widget> _pages = [
     const DashboardPage(),
-    ServiceListPage(), // 添加服务列表页面
+    ServiceListPage(), // 导入服务列表页面
     const SystemSettingsPage(), // Corrected class name for '系统设置'
   ];
 
