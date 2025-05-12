@@ -1,0 +1,127 @@
+name: Create Release Tag
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore: # 为了避免因打tag触发的commit再次触发此workflow
+      - '**.md' # 忽略所有markdown文件的更改
+
+jobs:
+  tag_release:
+    name: Create and Push Tag
+    if: contains(github.event.head_commit.message, '[release]')
+    runs-on: windows-latest
+    permissions:
+      contents: write # 需要写入权限来推送tag
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 获取所有历史记录，以便能够推送tag
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable' # 或者根据你的项目选择 'beta', 'dev', 'master'
+
+      - name: Extract version from pubspec.yaml
+        id: get_version
+        run: |
+          $versionLine = Get-Content pubspec.yaml | Select-String -Pattern '^version:'
+          # $versionNumber = $versionLine.Line.Split(' ').Trim() # Old line
+          $versionNumber = ($versionLine.Line -replace 'version:\s*', '').Trim() # New robust line
+          echo "version_from_pubspec=$versionNumber" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "Extracted version: $versionNumber"
+        shell: powershell
+
+      - name: Create Git Tag
+        id: create_tag
+        run: |
+          $tagName = "v${{ steps.get_version.outputs.version_from_pubspec }}"
+          Write-Host "Creating tag: $tagName"
+          git tag "$tagName"
+          echo "tag_name=$tagName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+        shell: powershell
+
+      - name: Push Git Tag
+        run: |
+          Write-Host "Pushing tag ${{ steps.create_tag.outputs.tag_name }}"
+          git push origin ${{ steps.create_tag.outputs.tag_name }}
+          Write-Host "Pushed tag ${{ steps.create_tag.outputs.tag_name }} to remote."
+        shell: powershell
+
+      - name: Build Windows Release
+        run: flutter build windows --release
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+        shell: powershell
+
+      - name: Download Inno Setup Chinese Language File
+        run: |
+          Invoke-WebRequest -Uri https://raw.githubusercontent.com/kira-96/Inno-Setup-Chinese-Simplified-Translation/master/ChineseSimplified.isl -OutFile ChineseSimplified.isl
+          $innoPath = "C:\Program Files (x86)\Inno Setup 6\Languages"
+          if (-not (Test-Path $innoPath)) { New-Item -ItemType Directory -Path $innoPath -Force | Out-Null }
+          Copy-Item -Path ChineseSimplified.isl -Destination $innoPath -Force
+        shell: powershell
+
+      - name: Create Installer
+        run: |
+          $appName = "ServiceLauncher"
+          $appVersion = "${{ steps.get_version.outputs.version_from_pubspec }}"
+          $issFile = "setup/default.iss"
+          $outputDir = "output_installer"
+          $outputBaseFilename = "$appName-Setup-$appVersion"
+
+          (Get-Content $issFile) | ForEach-Object { $_ -replace "{{APP_VERSION}}", $appVersion } | Set-Content "$issFile.tmp"
+          Move-Item "$issFile.tmp" $issFile -Force
+
+          # & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" $issFile # Old line
+          # New robust call:
+          $isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (Test-Path $isccPath) {
+              & $isccPath $issFile
+          } elseif (Get-Command ISCC.exe -ErrorAction SilentlyContinue) {
+              ISCC.exe $issFile
+          } else {
+              Write-Error "ISCC.exe not found at $isccPath or in PATH."
+              exit 1
+          }
+
+          $expectedFile = "output_installer/ServiceLauncher-Setup-${{ steps.get_version.outputs.version_from_pubspec }}.exe"
+          if (-not (Test-Path $expectedFile)) {
+            Write-Error "Installer file not found after build: $expectedFile. Check Inno Setup script (setup/default.iss) OutputDir and OutputBaseFilename."
+            exit 1
+          } else {
+            Write-Host "Installer file $expectedFile found."
+          }
+        shell: powershell
+
+      - name: Upload Windows Installer Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: "output_installer/ServiceLauncher-Setup-${{ steps.get_version.outputs.version_from_pubspec }}.exe"
+
+      - name: Archive Raw Build Output (ZIP)
+        shell: powershell
+        run: |
+          Compress-Archive -Path ./build/windows/x64/runner/Release/* -DestinationPath ./output_installer/ServiceLauncher-Raw-Build-${{ steps.get_version.outputs.version_from_pubspec }}.zip -Force
+          Write-Host "Raw build output archived to ./output_installer/ServiceLauncher-Raw-Build-${{ steps.get_version.outputs.version_from_pubspec }}.zip"
+
+      - name: Create GitHub Release and Upload Assets
+        uses: softprops/action-gh-release@v2 # 使用 v2 版本
+        with:
+          tag_name: ${{ steps.create_tag.outputs.tag_name }}
+          name: Release ${{ steps.create_tag.outputs.tag_name }} # 例如 "Release v1.0.0"
+          body: |
+            正式版本 ${{ steps.get_version.outputs.version_from_pubspec }}.
+            Windows 安装程序和原始构建文件如下。
+          draft: false
+          prerelease: false # 标记为正式版
+          files: |
+            output_installer/ServiceLauncher-Setup-${{ steps.get_version.outputs.version_from_pubspec }}.exe
+            output_installer/ServiceLauncher-Raw-Build-${{ steps.get_version.outputs.version_from_pubspec }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 确保 GITHUB_TOKEN 被传递
