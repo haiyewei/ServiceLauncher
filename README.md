@@ -1,6 +1,6 @@
 # ServiceLauncher
 
-[ServiceLauncher Icon](assets/icons/app_icon.png)
+![ServiceLauncher Icon](assets/icons/app_icon.png)
 
 [GitHub Repository](https://github.com/haiyewei/ServiceLauncher)
 
