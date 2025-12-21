@@ -1,0 +1,25 @@
+<mat-nav-list>
+  <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+    <mat-icon matListItemIcon>dashboard</mat-icon>
+    @if (!sidebar.collapsed()) {
+    <span matListItemTitle>{{ "sidebar.dashboard" | translate }}</span>
+    }
+  </a>
+  <a mat-list-item routerLink="/processes" routerLinkActive="active">
+    <mat-icon matListItemIcon>terminal</mat-icon>
+    @if (!sidebar.collapsed()) {
+    <span matListItemTitle>{{ "sidebar.processes" | translate }}</span>
+    }
+  </a>
+  <a mat-list-item routerLink="/settings" routerLinkActive="active">
+    <mat-icon matListItemIcon>settings</mat-icon>
+    @if (!sidebar.collapsed()) {
+    <span matListItemTitle>{{ "sidebar.settings" | translate }}</span>
+    }
+  </a>
+</mat-nav-list>
+<div class="toggle-btn" (click)="toggle()">
+  <mat-icon>{{
+    sidebar.collapsed() ? "chevron_right" : "chevron_left"
+    }}</mat-icon>
+</div>

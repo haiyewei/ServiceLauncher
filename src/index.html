@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>ServiceLauncher</title>
+  <base href="/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <link rel="icon" href="data:," />
+  <script>
+    // 禁用右键菜单（仅生产环境，开发环境保留方便调试）
+    document.addEventListener("DOMContentLoaded", function () {
+      // 检查是否为开发环境（Tauri 开发模式会设置 debug 标志）
+      var isDebug =
+        window.__TAURI_INTERNALS__ &&
+        window.__TAURI_INTERNALS__.metadata &&
+        window.__TAURI_INTERNALS__.metadata.debug;
+      if (!isDebug) {
+        document.addEventListener("contextmenu", function (e) {
+          e.preventDefault();
+        });
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <app-root></app-root>
+</body>
+
+</html>

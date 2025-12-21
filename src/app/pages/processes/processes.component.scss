@@ -1,0 +1,262 @@
+.process-container {
+    padding: 0 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    @media (max-width: 768px) {
+        padding: 0 12px;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0 8px;
+    }
+}
+
+.process-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.loading-state {
+    display: flex;
+    justify-content: center;
+    padding: 48px;
+}
+
+.empty-card {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: var(--mat-sys-on-surface-variant);
+
+    mat-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        opacity: 0.5;
+    }
+
+    p {
+        font-size: 18px;
+        margin: 0;
+    }
+}
+
+mat-card-header {
+    padding: 16px;
+
+    mat-icon[mat-card-avatar] {
+        font-size: 24px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
+        border-radius: 50%;
+
+        @media (max-width: 480px) {
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+        }
+    }
+
+    .header-actions {
+        margin-left: auto;
+
+        .btn-text {
+            @media (max-width: 480px) {
+                display: none;
+            }
+        }
+    }
+}
+
+// 桌面端表格视图
+.table-view {
+    display: block;
+    overflow-x: auto;
+
+    @media (max-width: 768px) {
+        display: none;
+    }
+
+    ::ng-deep table.mat-mdc-table {
+        width: 100%;
+        border-collapse: separate !important;
+        border-spacing: 0 8px !important;
+        background: transparent !important;
+
+        // 隐藏表头
+        .mat-mdc-header-row {
+            display: none !important;
+        }
+
+        // 表格行样式 - 与移动端列表项一致
+        .mat-mdc-row {
+            background: var(--mat-sys-surface-container) !important;
+
+            .mat-mdc-cell {
+                border: none !important;
+                background: transparent !important;
+
+                &:first-child {
+                    border-radius: 16px 0 0 16px;
+                }
+
+                &:last-child {
+                    border-radius: 0 16px 16px 0;
+                }
+            }
+        }
+    }
+
+    .command-cell {
+        max-width: 200px;
+    }
+
+    .command-text {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    // 在窄屏幕隐藏状态和命令列
+    @media (max-width: 900px) {
+
+        ::ng-deep .mat-column-status,
+        ::ng-deep .mat-column-command {
+            display: none;
+        }
+    }
+
+    // 操作列不换行
+    ::ng-deep .mat-column-actions {
+        white-space: nowrap;
+        width: 120px;
+        min-width: 120px;
+
+        button {
+            display: inline-flex;
+            vertical-align: middle;
+        }
+    }
+}
+
+// 移动端列表视图
+.list-view {
+    display: none;
+
+    @media (max-width: 768px) {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+
+.process-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    background: var(--mat-sys-surface-container);
+    border-radius: 16px;
+    gap: 12px;
+}
+
+.process-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.process-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    mat-icon {
+        flex-shrink: 0;
+    }
+
+    .process-name {
+        font-weight: 500;
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    mat-chip {
+        flex-shrink: 0;
+    }
+}
+
+.process-details {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--mat-sys-on-surface-variant);
+
+    .command-text {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-family: monospace;
+    }
+
+    .pid {
+        flex-shrink: 0;
+        font-family: monospace;
+    }
+}
+
+.process-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    padding-top: 8px;
+}
+
+.status-running {
+    color: var(--mat-sys-primary);
+}
+
+.status-stopped {
+    color: var(--mat-sys-outline);
+}
+
+.status-error {
+    color: var(--mat-sys-error);
+}
+
+mat-chip {
+    font-size: 12px;
+}
+
+.has-output {
+    color: var(--mat-sys-primary);
+}

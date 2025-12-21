@@ -1,0 +1,83 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm"
+  },
+  "tray": {
+    "show": "Show Window",
+    "quit": "Quit"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "processes": "Processes",
+    "downloads": "Downloads",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "processOverview": "Process Overview",
+    "processOverviewDesc": "Manage and monitor your processes",
+    "running": "Running",
+    "stopped": "Stopped",
+    "total": "Total",
+    "viewAll": "View All",
+    "recentProcesses": "Recent Processes",
+    "noProcesses": "No processes yet"
+  },
+  "process": {
+    "title": "Process Manager",
+    "add": "Add Process",
+    "addTitle": "Add New Process",
+    "forkMode": "Fork Mode",
+    "importMode": "Import Mode",
+    "executablePath": "Executable File",
+    "sourceFolder": "Source Folder",
+    "forkHint": "Select executable, uses its directory as working dir",
+    "importHint": "Select folder, will be copied to app directory",
+    "list": "Process List",
+    "empty": "No processes yet",
+    "addFirst": "Add your first process",
+    "status": "Status",
+    "name": "Name",
+    "command": "Command",
+    "args": "Arguments",
+    "argsHint": "Separate multiple arguments with spaces",
+    "workingDir": "Working Directory",
+    "mode": "Mode",
+    "actions": "Actions",
+    "start": "Start",
+    "stop": "Stop",
+    "remove": "Remove",
+    "autoRestart": "Auto Restart",
+    "autoStart": "Start with App",
+    "edit": "Edit",
+    "editTitle": "Edit Process",
+    "viewOutput": "View Output",
+    "output": "Output",
+    "noOutput": "No output yet",
+    "clearOutput": "Clear"
+  },
+  "settings": {
+    "language": {
+      "title": "Language",
+      "label": "Language / 语言",
+      "description": "Select interface display language"
+    },
+    "system": {
+      "title": "System Settings",
+      "description": "System settings and preferences",
+      "useSystemAccent": "Use System Accent Color",
+      "useSystemAccentHint": "Use Windows system accent color",
+      "themeColor": "Theme Color",
+      "themeColorHint": "Select app theme color",
+      "followSystem": "Follow System Light/Dark",
+      "followSystemHint": "Automatically follow system light/dark mode",
+      "darkMode": "Dark Mode",
+      "darkModeHint": "Use dark theme",
+      "autoStart": "Launch at Startup",
+      "autoStartHint": "Automatically launch when system starts",
+      "silentStart": "Silent Start",
+      "silentStartHint": "Hide main window on startup"
+    }
+  }
+}

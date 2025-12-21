@@ -1,0 +1,91 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  /* Prevent layout shift when scrollbar appears */
+
+  overflow-y: auto;
+}
+
+body {
+  margin: 0;
+  font-family:
+    "Noto Sans Variable", "Noto Sans SC Variable", "Noto Sans JP Variable",
+    "Noto Sans KR Variable", sans-serif;
+}
+
+/* Material Icons */
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--mat-sys-surface-variant);
+  border-radius: 4px;
+}
+
+/* Dialog border radius */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 16px !important;
+}
+
+/* Form field border radius */
+.mat-mdc-form-field-flex {
+  border-radius: 8px !important;
+}
+
+.mdc-notched-outline__leading {
+  border-radius: 8px 0 0 8px !important;
+}
+
+.mdc-notched-outline__trailing {
+  border-radius: 0 8px 8px 0 !important;
+}
+
+/* Remove mat-card default corner shadows */
+.mat-mdc-card {
+  --mdc-elevated-card-container-shape: 16px;
+  --mdc-elevated-card-container-elevation: none;
+  box-shadow: none !important;
+
+  &::before,
+  &::after {
+    display: none !important;
+  }
+}
+
+/* Button border radius */
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-stroked-button,
+.mat-mdc-flat-button,
+.mat-mdc-outlined-button {
+  border-radius: 8px !important;
+}

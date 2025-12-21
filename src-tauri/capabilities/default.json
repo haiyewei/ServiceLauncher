@@ -1,0 +1,32 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window and login webviews",
+  "windows": ["main", "login-*"],
+  "permissions": [
+    "core:default",
+    "core:app:allow-default-window-icon",
+    "opener:default",
+    "dialog:default",
+    "dialog:allow-open",
+    "core:window:default",
+    "core:window:allow-create",
+    "core:window:allow-close",
+    "core:window:allow-set-focus",
+    "core:window:allow-center",
+    "core:webview:default",
+    "core:webview:allow-create-webview-window",
+    "core:webview:allow-webview-close",
+    "core:webview:allow-set-webview-focus"
+  ],
+  "remote": {
+    "urls": [
+      "https://onlyfans.com/*",
+      "https://*.onlyfans.com/*",
+      "https://fansone.co/*",
+      "https://*.fansone.co/*",
+      "https://my.club/*",
+      "https://*.my.club/*"
+    ]
+  }
+}

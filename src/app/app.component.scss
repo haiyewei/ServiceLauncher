@@ -1,0 +1,25 @@
+.app-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: 48px 1fr;
+  height: 100vh;
+}
+
+app-topbar {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  z-index: 10;
+}
+
+app-sidebar {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.content {
+  grid-column: 2;
+  grid-row: 2;
+  overflow: auto;
+  /* Prevent layout shift when scrollbar appears */
+  scrollbar-gutter: stable;
+}

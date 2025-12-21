@@ -1,0 +1,83 @@
+{
+  "common": {
+    "cancel": "取消",
+    "close": "关闭",
+    "confirm": "确认"
+  },
+  "tray": {
+    "show": "显示窗口",
+    "quit": "退出"
+  },
+  "sidebar": {
+    "dashboard": "仪表盘",
+    "processes": "进程",
+    "downloads": "下载",
+    "settings": "设置"
+  },
+  "dashboard": {
+    "processOverview": "进程概览",
+    "processOverviewDesc": "管理和监控您的进程",
+    "running": "运行中",
+    "stopped": "已停止",
+    "total": "总计",
+    "viewAll": "查看全部",
+    "recentProcesses": "最近进程",
+    "noProcesses": "暂无进程"
+  },
+  "process": {
+    "title": "进程管理",
+    "add": "添加进程",
+    "addTitle": "添加新进程",
+    "forkMode": "Fork 模式",
+    "importMode": "导入模式",
+    "executablePath": "可执行文件",
+    "sourceFolder": "源文件夹",
+    "forkHint": "选择可执行文件，以其所在目录作为工作目录",
+    "importHint": "选择文件夹，将复制到应用目录执行",
+    "list": "进程列表",
+    "empty": "暂无进程",
+    "addFirst": "添加第一个进程",
+    "status": "状态",
+    "name": "名称",
+    "command": "命令",
+    "args": "参数",
+    "argsHint": "用空格分隔多个参数",
+    "workingDir": "工作目录",
+    "mode": "模式",
+    "actions": "操作",
+    "start": "启动",
+    "stop": "停止",
+    "remove": "删除",
+    "autoRestart": "自动重启",
+    "autoStart": "跟随应用启动",
+    "edit": "编辑",
+    "editTitle": "编辑进程",
+    "viewOutput": "查看输出",
+    "output": "输出",
+    "noOutput": "暂无输出",
+    "clearOutput": "清空"
+  },
+  "settings": {
+    "language": {
+      "title": "语言",
+      "label": "语言 / Language",
+      "description": "选择界面显示语言"
+    },
+    "system": {
+      "title": "系统设置",
+      "description": "系统设置和偏好选项",
+      "useSystemAccent": "跟随系统主题色",
+      "useSystemAccentHint": "使用 Windows 系统主题色",
+      "themeColor": "主题色",
+      "themeColorHint": "选择应用主题色",
+      "followSystem": "跟随系统深浅",
+      "followSystemHint": "自动跟随系统深浅模式切换",
+      "darkMode": "深色模式",
+      "darkModeHint": "使用深色主题",
+      "autoStart": "开机自启",
+      "autoStartHint": "系统启动时自动运行应用",
+      "silentStart": "静默启动",
+      "silentStartHint": "开机自启时隐藏主窗口"
+    }
+  }
+}

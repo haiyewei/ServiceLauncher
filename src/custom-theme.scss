@@ -1,0 +1,92 @@
+// Include theming for Angular Material with `mat.theme()`.
+@use "@angular/material" as mat;
+
+// 定义调色板映射
+$palettes: (
+  "red": mat.$red-palette,
+  "green": mat.$green-palette,
+  "blue": mat.$blue-palette,
+  "yellow": mat.$yellow-palette,
+  "cyan": mat.$cyan-palette,
+  "magenta": mat.$magenta-palette,
+  "orange": mat.$orange-palette,
+  "chartreuse": mat.$chartreuse-palette,
+  "spring-green": mat.$spring-green-palette,
+  "azure": mat.$azure-palette,
+  "violet": mat.$violet-palette,
+  "rose": mat.$rose-palette,
+);
+
+// Light theme (default - azure)
+html,
+html.light-theme {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+  color-scheme: light;
+}
+
+// Dark theme (default - azure)
+html.dark-theme {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+  color-scheme: dark;
+}
+
+// 为每个调色板生成浅色和深色主题
+@each $name, $palette in $palettes {
+  // 浅色模式 + 调色板
+  html.light-theme.palette-#{$name},
+  html.palette-#{$name}:not(.dark-theme) {
+    @include mat.theme(
+      (
+        color: (
+          theme-type: light,
+          primary: $palette,
+          tertiary: mat.$blue-palette,
+        ),
+        typography: Roboto,
+        density: 0,
+      )
+    );
+  }
+
+  // 深色模式 + 调色板
+  html.dark-theme.palette-#{$name} {
+    @include mat.theme(
+      (
+        color: (
+          theme-type: dark,
+          primary: $palette,
+          tertiary: mat.$blue-palette,
+        ),
+        typography: Roboto,
+        density: 0,
+      )
+    );
+  }
+}
+
+body {
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+}

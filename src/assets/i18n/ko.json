@@ -1,0 +1,83 @@
+{
+  "common": {
+    "cancel": "취소",
+    "close": "닫기",
+    "confirm": "확인"
+  },
+  "tray": {
+    "show": "창 표시",
+    "quit": "종료"
+  },
+  "sidebar": {
+    "dashboard": "대시보드",
+    "processes": "프로세스",
+    "downloads": "다운로드",
+    "settings": "설정"
+  },
+  "dashboard": {
+    "processOverview": "프로세스 개요",
+    "processOverviewDesc": "프로세스 관리 및 모니터링",
+    "running": "실행 중",
+    "stopped": "중지됨",
+    "total": "전체",
+    "viewAll": "모두 보기",
+    "recentProcesses": "최근 프로세스",
+    "noProcesses": "프로세스가 없습니다"
+  },
+  "process": {
+    "title": "프로세스 관리",
+    "add": "프로세스 추가",
+    "addTitle": "새 프로세스 추가",
+    "forkMode": "Fork 모드",
+    "importMode": "가져오기 모드",
+    "executablePath": "실행 파일",
+    "sourceFolder": "소스 폴더",
+    "forkHint": "실행 파일 선택, 해당 디렉토리를 작업 디렉토리로 사용",
+    "importHint": "폴더 선택, 앱 디렉토리로 복사하여 실행",
+    "list": "프로세스 목록",
+    "empty": "프로세스가 없습니다",
+    "addFirst": "첫 번째 프로세스 추가",
+    "status": "상태",
+    "name": "이름",
+    "command": "명령",
+    "args": "인수",
+    "argsHint": "여러 인수는 공백으로 구분",
+    "workingDir": "작업 디렉토리",
+    "mode": "모드",
+    "actions": "작업",
+    "start": "시작",
+    "stop": "중지",
+    "remove": "삭제",
+    "autoRestart": "자동 재시작",
+    "autoStart": "앱과 함께 시작",
+    "edit": "편집",
+    "editTitle": "프로세스 편집",
+    "viewOutput": "출력 보기",
+    "output": "출력",
+    "noOutput": "출력이 없습니다",
+    "clearOutput": "지우기"
+  },
+  "settings": {
+    "language": {
+      "title": "언어",
+      "label": "언어 / Language",
+      "description": "인터페이스 표시 언어 선택"
+    },
+    "system": {
+      "title": "시스템 설정",
+      "description": "시스템 설정 및 환경설정",
+      "useSystemAccent": "시스템 강조 색상 사용",
+      "useSystemAccentHint": "Windows 시스템 강조 색상 사용",
+      "themeColor": "테마 색상",
+      "themeColorHint": "앱 테마 색상 선택",
+      "followSystem": "시스템 밝기 따르기",
+      "followSystemHint": "시스템 라이트/다크 모드 자동 따르기",
+      "darkMode": "다크 모드",
+      "darkModeHint": "다크 테마 사용",
+      "autoStart": "시작 시 실행",
+      "autoStartHint": "시스템 시작 시 자동으로 실행",
+      "silentStart": "자동 시작",
+      "silentStartHint": "시작 시 메인 창 숨기기"
+    }
+  }
+}

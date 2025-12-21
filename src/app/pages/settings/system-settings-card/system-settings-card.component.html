@@ -1,0 +1,156 @@
+<mat-card class="settings-card">
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>settings</mat-icon>
+      {{ "settings.system.title" | translate }}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <!-- 跟随系统主题色 -->
+    <div class="setting-item">
+      <div class="setting-header">
+        <mat-icon>colorize</mat-icon>
+        <span class="setting-label">{{
+          "settings.system.useSystemAccent" | translate
+          }}</span>
+      </div>
+      <div class="setting-control toggle-control">
+        <span class="setting-hint">{{
+          "settings.system.useSystemAccentHint" | translate
+          }}</span>
+        <mat-slide-toggle [checked]="themeService.useSystemAccent()"
+          (change)="themeService.setUseSystemAccent($event.checked)"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <!-- 主题色选择 -->
+    @if (!themeService.useSystemAccent()) {
+    <div class="setting-item palette-setting">
+      <div class="setting-header">
+        <mat-icon>palette</mat-icon>
+        <span class="setting-label">{{
+          "settings.system.themeColor" | translate
+          }}</span>
+      </div>
+      <div class="setting-control toggle-control">
+        <span class="setting-hint">{{
+          "settings.system.themeColorHint" | translate
+          }}</span>
+        <div class="palette-trigger">
+          <button class="current-color" [style.background-color]="getCurrentPaletteColor()"
+            (click)="togglePalettePanel()"></button>
+          <mat-icon class="expand-icon" [class.expanded]="showPalettePanel()">expand_more</mat-icon>
+          <!-- 调色板展开面板 -->
+          @if (showPalettePanel()) {
+          <div class="palette-panel">
+            @for (
+            palette of themeService.paletteOptions;
+            track palette.value
+            ) {
+            <button class="palette-btn" [class.selected]="
+                      themeService.selectedPalette() === palette.value
+                    " [style.background-color]="palette.color" (click)="selectPalette(palette.value)"
+              [title]="palette.label"></button>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- 跟随系统主题 -->
+    <div class="setting-item">
+      <div class="setting-header">
+        <mat-icon>brightness_auto</mat-icon>
+        <span class="setting-label">{{
+          "settings.system.followSystem" | translate
+          }}</span>
+      </div>
+      <div class="setting-control toggle-control">
+        <span class="setting-hint">{{
+          "settings.system.followSystemHint" | translate
+          }}</span>
+        <mat-slide-toggle [checked]="themeService.followSystem()"
+          (change)="themeService.setFollowSystem($event.checked)"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <!-- 深色模式 -->
+    @if (!themeService.followSystem()) {
+    <div class="setting-item">
+      <div class="setting-header">
+        <mat-icon>dark_mode</mat-icon>
+        <span class="setting-label">{{
+          "settings.system.darkMode" | translate
+          }}</span>
+      </div>
+      <div class="setting-control toggle-control">
+        <span class="setting-hint">{{
+          "settings.system.darkModeHint" | translate
+          }}</span>
+        <mat-slide-toggle [checked]="themeService.darkMode()"
+          (change)="themeService.setDarkMode($event.checked)"></mat-slide-toggle>
+      </div>
+    </div>
+    }
+
+    <!-- 语言设置 -->
+    <div class="setting-item">
+      <div class="setting-header">
+        <mat-icon>language</mat-icon>
+        <span class="setting-label">{{
+          "settings.language.title" | translate
+          }}</span>
+      </div>
+      <div class="setting-control select-control">
+        <span class="setting-hint">{{
+          "settings.language.description" | translate
+          }}</span>
+        <mat-form-field appearance="outline" class="lang-select-field">
+          <mat-select [value]="langService.getCurrentLang()" (selectionChange)="langService.setLanguage($event.value)">
+            <mat-option value="zh">中文</mat-option>
+            <mat-option value="en">English</mat-option>
+            <mat-option value="ko">한국어</mat-option>
+            <mat-option value="ja">日本語</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="setting-item">
+      <div class="setting-header">
+        <mat-icon>power_settings_new</mat-icon>
+        <span class="setting-label">{{
+          "settings.system.autoStart" | translate
+          }}</span>
+      </div>
+      <div class="setting-control toggle-control">
+        <span class="setting-hint">{{
+          "settings.system.autoStartHint" | translate
+          }}</span>
+        <mat-slide-toggle [checked]="autoStartEnabled()"
+          (change)="onAutoStartChange($event.checked)"></mat-slide-toggle>
+      </div>
+    </div>
+
+    <!-- 静默启动 -->
+    @if (autoStartEnabled()) {
+    <div class="setting-item">
+      <div class="setting-header">
+        <mat-icon>visibility_off</mat-icon>
+        <span class="setting-label">{{
+          "settings.system.silentStart" | translate
+          }}</span>
+      </div>
+      <div class="setting-control toggle-control">
+        <span class="setting-hint">{{
+          "settings.system.silentStartHint" | translate
+          }}</span>
+        <mat-slide-toggle [checked]="silentStartEnabled()"
+          (change)="onSilentStartChange($event.checked)"></mat-slide-toggle>
+      </div>
+    </div>
+    }
+  </mat-card-content>
+</mat-card>
