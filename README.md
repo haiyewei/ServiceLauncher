@@ -62,7 +62,7 @@ ServiceLauncher/
 
 ## 技术栈
 
-- **前端**：Angular 19 + Angular Material
+- **前端**：Angular 21 + Angular Material
 - **后端**：Tauri 2 (Rust)
 - **数据库**：SQLite (rusqlite)
 
