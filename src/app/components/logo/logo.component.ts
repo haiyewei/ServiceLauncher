@@ -13,8 +13,7 @@ import { TranslateService } from "@ngx-translate/core";
 
 const TITLE_KEYS: Record<string, string> = {
   dashboard: "sidebar.dashboard",
-  scrape: "sidebar.scrape",
-  downloads: "sidebar.downloads",
+  processes: "sidebar.processes",
   settings: "sidebar.settings",
 };
 

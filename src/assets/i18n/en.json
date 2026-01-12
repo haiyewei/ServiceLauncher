@@ -43,6 +43,9 @@
     "args": "Arguments",
     "argsHint": "Separate multiple arguments with spaces",
     "workingDir": "Working Directory",
+    "workingDirHint": "Required, select the working directory for the program",
+    "executablePath": "Executable Path",
+    "executablePathHint": "Optional, select the program file to execute",
     "mode": "Mode",
     "actions": "Actions",
     "start": "Start",
@@ -55,7 +58,15 @@
     "viewOutput": "View Output",
     "output": "Output",
     "noOutput": "No output yet",
-    "clearOutput": "Clear"
+    "clearOutput": "Clear",
+    "commandType": "Command Type",
+    "commandTypeExecutable": "Executable",
+    "commandTypeShell": "Shell Command",
+    "commandTypeExecutableShort": "Exe",
+    "commandTypeShellShort": "Shell",
+    "shellCommand": "Shell Command",
+    "shellCommandHint": "You can enter commands like npm start, python script.py, etc.",
+    "shellCommandInputHint": "Enter shell command, e.g. npm start"
   },
   "settings": {
     "language": {

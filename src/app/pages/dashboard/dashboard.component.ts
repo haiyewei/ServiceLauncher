@@ -5,23 +5,23 @@ import {
   OnInit,
   OnDestroy,
   signal,
-} from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { TranslateModule } from '@ngx-translate/core';
-import { ProcessService } from '../../services/process.service';
+} from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { MatCardModule } from "@angular/material/card";
+import { MatIconModule } from "@angular/material/icon";
+import { MatButtonModule } from "@angular/material/button";
+import { MatListModule } from "@angular/material/list";
+import { MatMenuModule } from "@angular/material/menu";
+import { MatDialog, MatDialogModule } from "@angular/material/dialog";
+import { TranslateModule } from "@ngx-translate/core";
+import { ProcessService } from "../../services/process.service";
 import {
   AddProcessDialogComponent,
   AddProcessDialogResult,
-} from '../processes/add-process-dialog.component';
+} from "../processes/add-process-dialog.component";
 
 @Component({
-  selector: 'app-dashboard',
+  selector: "app-dashboard",
   imports: [
     RouterLink,
     MatCardModule,
@@ -32,8 +32,8 @@ import {
     MatDialogModule,
     TranslateModule,
   ],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
+  templateUrl: "./dashboard.component.html",
+  styleUrls: ["./dashboard.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent implements OnInit, OnDestroy {
@@ -58,42 +58,48 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  openAddDialog(mode: 'fork' | 'import') {
+  openAddDialog(mode: "fork" | "import") {
     const dialogRef = this.dialog.open(AddProcessDialogComponent, {
-      width: '90vw',
-      maxWidth: '500px',
+      width: "90vw",
+      maxWidth: "500px",
       data: { mode },
     });
 
-    dialogRef.afterClosed().subscribe(async (result: AddProcessDialogResult) => {
-      if (result) {
-        try {
-          if (result.mode === 'fork') {
-            await this.processService.addProcessFork({
-              name: result.name,
-              executable_path: result.path,
-              args: result.args,
-              auto_restart: result.autoRestart,
-              auto_start: result.autoStart,
-            });
-          } else {
-            await this.processService.addProcessImport({
-              name: result.name,
-              source_folder: result.path,
-              args: result.args,
-              auto_restart: result.autoRestart,
-              auto_start: result.autoStart,
-            });
+    dialogRef
+      .afterClosed()
+      .subscribe(async (result: AddProcessDialogResult) => {
+        if (result) {
+          try {
+            if (result.mode === "fork") {
+              await this.processService.addProcessFork({
+                name: result.name,
+                working_dir: result.workingDir,
+                executable_path: result.executablePath,
+                args: result.args,
+                auto_restart: result.autoRestart,
+                auto_start: result.autoStart,
+                command_type: result.commandType,
+              });
+            } else {
+              await this.processService.addProcessImport({
+                name: result.name,
+                source_folder: result.path,
+                executable_path: result.executablePath,
+                args: result.args,
+                auto_restart: result.autoRestart,
+                auto_start: result.autoStart,
+                command_type: result.commandType,
+              });
+            }
+          } catch (error) {
+            console.error("Failed to add process:", error);
           }
-        } catch (error) {
-          console.error('Failed to add process:', error);
         }
-      }
-    });
+      });
   }
 
   async toggleProcess(id: string, status: string) {
-    if (status === 'running') {
+    if (status === "running") {
       await this.processService.stopProcess(id);
     } else {
       await this.processService.startProcess(id);
@@ -102,14 +108,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getStatusIcon(status: string): string {
     switch (status) {
-      case 'running':
-        return 'play_circle';
-      case 'stopped':
-        return 'stop_circle';
-      case 'error':
-        return 'error';
+      case "running":
+        return "play_circle";
+      case "stopped":
+        return "stop_circle";
+      case "error":
+        return "error";
       default:
-        return 'help';
+        return "help";
     }
   }
 

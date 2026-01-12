@@ -43,6 +43,9 @@
     "args": "参数",
     "argsHint": "用空格分隔多个参数",
     "workingDir": "工作目录",
+    "workingDirHint": "必选，选择程序的工作目录",
+    "executablePath": "可执行程序",
+    "executablePathHint": "可选，选择要执行的程序文件",
     "mode": "模式",
     "actions": "操作",
     "start": "启动",
@@ -55,7 +58,15 @@
     "viewOutput": "查看输出",
     "output": "输出",
     "noOutput": "暂无输出",
-    "clearOutput": "清空"
+    "clearOutput": "清空",
+    "commandType": "命令类型",
+    "commandTypeExecutable": "可执行程序",
+    "commandTypeShell": "Shell 命令",
+    "commandTypeExecutableShort": "程序",
+    "commandTypeShellShort": "Shell",
+    "shellCommand": "Shell 命令",
+    "shellCommandHint": "可以输入如 npm start、python script.py 等命令",
+    "shellCommandInputHint": "输入 Shell 命令，如 npm start"
   },
   "settings": {
     "language": {

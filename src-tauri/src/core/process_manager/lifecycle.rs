@@ -48,6 +48,7 @@ pub fn start_process(
         id: config.id,
         name: config.name,
         mode: config.mode,
+        command_type: config.command_type,
         command: config.command,
         args: config.args,
         working_dir: config.working_dir,

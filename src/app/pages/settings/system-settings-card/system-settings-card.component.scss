@@ -2,6 +2,34 @@
 
 .settings-card {
   @include shared.settings-card-base;
+
+  mat-card-header {
+    padding: 16px;
+
+    mat-icon[mat-card-avatar] {
+      font-size: 24px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--mat-sys-primary-container);
+      color: var(--mat-sys-on-primary-container);
+      border-radius: 50%;
+
+      @media (max-width: 480px) {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+      }
+    }
+
+    .hide-mobile {
+      @media (max-width: 480px) {
+        display: none;
+      }
+    }
+  }
 }
 
 .setting-item {

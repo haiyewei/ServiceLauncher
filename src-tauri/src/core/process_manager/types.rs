@@ -3,6 +3,17 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+/// 命令类型：定义如何执行命令
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
+#[serde(rename_all = "lowercase")]
+pub enum CommandType {
+    /// 直接执行可执行文件
+    #[default]
+    Executable,
+    /// 通过系统 shell 执行命令
+    Shell,
+}
+
 /// 进程启动模式
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
@@ -26,6 +37,9 @@ pub struct ProcessConfig {
     pub id: String,
     pub name: String,
     pub mode: ProcessMode,
+    /// 命令类型：Executable（直接执行）或 Shell（通过 shell 执行）
+    #[serde(default)]
+    pub command_type: CommandType,
     pub command: String,
     pub args: Vec<String>,
     pub working_dir: String,
@@ -42,6 +56,9 @@ pub struct ProcessInfo {
     pub id: String,
     pub name: String,
     pub mode: ProcessMode,
+    /// 命令类型：Executable（直接执行）或 Shell（通过 shell 执行）
+    #[serde(default)]
+    pub command_type: CommandType,
     pub command: String,
     pub args: Vec<String>,
     pub working_dir: String,

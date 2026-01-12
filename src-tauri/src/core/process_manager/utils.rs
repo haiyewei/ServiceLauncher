@@ -55,36 +55,6 @@ pub fn copy_dir_recursive(src: &Path, dst: &Path) -> Result<(), String> {
     Ok(())
 }
 
-/// 查找文件夹中的可执行文件
-pub fn find_executable(dir: &Path) -> Option<PathBuf> {
-    if let Ok(entries) = std::fs::read_dir(dir) {
-        for entry in entries.flatten() {
-            let path = entry.path();
-            if path.is_file() {
-                #[cfg(windows)]
-                {
-                    if let Some(ext) = path.extension() {
-                        let ext = ext.to_string_lossy().to_lowercase();
-                        if ext == "exe" || ext == "bat" || ext == "cmd" {
-                            return Some(path);
-                        }
-                    }
-                }
-                #[cfg(not(windows))]
-                {
-                    use std::os::unix::fs::PermissionsExt;
-                    if let Ok(meta) = path.metadata() {
-                        if meta.permissions().mode() & 0o111 != 0 {
-                            return Some(path);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    None
-}
-
 /// 结束同名进程 (Windows)
 #[cfg(windows)]
 pub fn kill_processes_by_name(exe_name: &str) -> Result<u32, String> {

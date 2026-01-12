@@ -4,10 +4,18 @@
     <mat-card class="overview-card">
       <mat-card-header>
         <mat-icon mat-card-avatar>terminal</mat-icon>
-        <mat-card-title>{{ "dashboard.processOverview" | translate }}</mat-card-title>
-        <mat-card-subtitle class="hide-mobile">{{ "dashboard.processOverviewDesc" | translate }}</mat-card-subtitle>
+        <mat-card-title>{{
+          "dashboard.processOverview" | translate
+        }}</mat-card-title>
+        <mat-card-subtitle class="hide-mobile">{{
+          "dashboard.processOverviewDesc" | translate
+        }}</mat-card-subtitle>
         <div class="header-actions">
-          <button mat-raised-button color="primary" [matMenuTriggerFor]="addMenu">
+          <button
+            mat-raised-button
+            color="primary"
+            [matMenuTriggerFor]="addMenu"
+          >
             <mat-icon>add</mat-icon>
             <span class="btn-text">{{ "process.add" | translate }}</span>
           </button>
@@ -26,15 +34,25 @@
       <mat-card-content>
         <div class="stats-row">
           <div class="stat-item">
-            <span class="stat-value running">{{ processService.runningCount() }}</span>
-            <span class="stat-label">{{ "dashboard.running" | translate }}</span>
+            <span class="stat-value running">{{
+              processService.runningCount()
+            }}</span>
+            <span class="stat-label">{{
+              "dashboard.running" | translate
+            }}</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value stopped">{{ processService.stoppedCount() }}</span>
-            <span class="stat-label">{{ "dashboard.stopped" | translate }}</span>
+            <span class="stat-value stopped">{{
+              processService.stoppedCount()
+            }}</span>
+            <span class="stat-label">{{
+              "dashboard.stopped" | translate
+            }}</span>
           </div>
           <div class="stat-item">
-            <span class="stat-value total">{{ processService.processes().length }}</span>
+            <span class="stat-value total">{{
+              processService.processes().length
+            }}</span>
             <span class="stat-label">{{ "dashboard.total" | translate }}</span>
           </div>
         </div>
@@ -45,7 +63,9 @@
     <mat-card class="process-list-card">
       <mat-card-header>
         <mat-icon mat-card-avatar>list</mat-icon>
-        <mat-card-title>{{ "dashboard.recentProcesses" | translate }}</mat-card-title>
+        <mat-card-title>{{
+          "dashboard.recentProcesses" | translate
+        }}</mat-card-title>
         <div class="header-actions">
           <a mat-raised-button routerLink="/processes">
             {{ "dashboard.viewAll" | translate }}
@@ -55,33 +75,40 @@
       </mat-card-header>
       <mat-card-content>
         @if (processService.processes().length === 0) {
-        <div class="empty-state">
-          <mat-icon>inbox</mat-icon>
-          <p>{{ "dashboard.noProcesses" | translate }}</p>
-        </div>
-        } @else {
-        <div class="process-list">
-          @for (process of processService.processes().slice(0, 5); track process.id) {
-          <div class="process-item">
-            <div class="process-info">
-              <mat-icon [class]="'status-' + process.status">
-                {{ getStatusIcon(process.status) }}
-              </mat-icon>
-              <div class="process-text">
-                <span class="process-name">{{ process.name }}</span>
-                <span class="process-command">{{ process.command }}</span>
-              </div>
-            </div>
-            <div class="process-time">
-              @if (process.status === 'running' && process.started_at) {
-              <span class="running-time">{{ getRunningTime(process.started_at) }}</span>
-              } @else {
-              <span class="stopped-label">{{ "dashboard.stopped" | translate }}</span>
-              }
-            </div>
+          <div class="empty-state">
+            <mat-icon>inbox</mat-icon>
+            <p>{{ "dashboard.noProcesses" | translate }}</p>
           </div>
-          }
-        </div>
+        } @else {
+          <div class="process-list">
+            @for (
+              process of processService.processes().slice(0, 5);
+              track process.id
+            ) {
+              <div class="process-item">
+                <div class="process-info">
+                  <mat-icon [class]="'status-' + process.status">
+                    {{ getStatusIcon(process.status) }}
+                  </mat-icon>
+                  <div class="process-text">
+                    <span class="process-name">{{ process.name }}</span>
+                    <span class="process-command">{{ process.command }}</span>
+                  </div>
+                </div>
+                <div class="process-time">
+                  @if (process.status === "running" && process.started_at) {
+                    <span class="running-time">{{
+                      getRunningTime(process.started_at)
+                    }}</span>
+                  } @else {
+                    <span class="stopped-label">{{
+                      "dashboard.stopped" | translate
+                    }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
         }
       </mat-card-content>
     </mat-card>

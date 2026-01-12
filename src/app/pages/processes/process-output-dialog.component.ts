@@ -7,13 +7,13 @@ import {
   ElementRef,
   ViewChild,
   AfterViewChecked,
-} from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
-import { ProcessService } from '../../services/process.service';
-import { ProcessOutputEvent } from '../../models/process.model';
+} from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogModule } from "@angular/material/dialog";
+import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule } from "@angular/material/icon";
+import { TranslateModule } from "@ngx-translate/core";
+import { ProcessService } from "../../services/process.service";
+import { ProcessOutputEvent } from "../../models/process.model";
 
 export interface ProcessOutputDialogData {
   id: string;
@@ -27,21 +27,23 @@ interface OutputLine {
 }
 
 @Component({
-  selector: 'app-process-output-dialog',
+  selector: "app-process-output-dialog",
   standalone: true,
   imports: [MatDialogModule, MatButtonModule, MatIconModule, TranslateModule],
   template: `
-    <h2 mat-dialog-title>{{ data.name }} - {{ "process.output" | translate }}</h2>
+    <h2 mat-dialog-title>
+      {{ data.name }} - {{ "process.output" | translate }}
+    </h2>
     <mat-dialog-content>
       <div class="output-container" #outputContainer>
         @for (line of outputLines(); track $index) {
-        <div class="output-line" [class.stderr]="line.type === 'stderr'">
-          <span class="timestamp">{{ formatTime(line.timestamp) }}</span>
-          <span class="content">{{ line.line }}</span>
-        </div>
+          <div class="output-line" [class.stderr]="line.type === 'stderr'">
+            <span class="timestamp">{{ formatTime(line.timestamp) }}</span>
+            <span class="content">{{ line.line }}</span>
+          </div>
         }
         @if (outputLines().length === 0) {
-        <div class="empty-output">{{ "process.noOutput" | translate }}</div>
+          <div class="empty-output">{{ "process.noOutput" | translate }}</div>
         }
       </div>
     </mat-dialog-content>
@@ -50,7 +52,9 @@ interface OutputLine {
         <mat-icon>delete</mat-icon>
         {{ "process.clearOutput" | translate }}
       </button>
-      <button mat-button mat-dialog-close>{{ "common.close" | translate }}</button>
+      <button mat-button mat-dialog-close>
+        {{ "common.close" | translate }}
+      </button>
     </mat-dialog-actions>
   `,
   styles: [
@@ -120,11 +124,12 @@ interface OutputLine {
   ],
 })
 export class ProcessOutputDialogComponent
-  implements OnInit, OnDestroy, AfterViewChecked {
+  implements OnInit, OnDestroy, AfterViewChecked
+{
   private readonly processService = inject(ProcessService);
   readonly data = inject<ProcessOutputDialogData>(MAT_DIALOG_DATA);
 
-  @ViewChild('outputContainer') outputContainer!: ElementRef<HTMLDivElement>;
+  @ViewChild("outputContainer") outputContainer!: ElementRef<HTMLDivElement>;
 
   outputLines = signal<OutputLine[]>([]);
   private shouldScroll = true;
@@ -147,7 +152,7 @@ export class ProcessOutputDialogComponent
   private async loadOutput() {
     const lines = await this.processService.getProcessOutput(this.data.id);
     this.outputLines.set(
-      lines.map(([timestamp, type, line]) => ({ timestamp, type, line }))
+      lines.map(([timestamp, type, line]) => ({ timestamp, type, line })),
     );
   }
 
@@ -164,7 +169,7 @@ export class ProcessOutputDialogComponent
           },
         ]);
         this.shouldScroll = true;
-      }
+      },
     );
   }
 
@@ -183,6 +188,6 @@ export class ProcessOutputDialogComponent
 
   formatTime(timestamp: number): string {
     const date = new Date(timestamp);
-    return date.toLocaleTimeString('en-US', { hour12: false });
+    return date.toLocaleTimeString("en-US", { hour12: false });
   }
 }

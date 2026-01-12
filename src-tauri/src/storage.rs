@@ -46,6 +46,23 @@ pub fn init_db(app: AppHandle) -> Result<Connection, rusqlite::Error> {
         [],
     )?;
 
+    // 数据库迁移：检查并添加 command_type 列
+    let has_command_type: bool = conn
+        .query_row(
+            "SELECT COUNT(*) FROM pragma_table_info('processes') WHERE name='command_type'",
+            [],
+            |row| row.get::<_, i32>(0),
+        )
+        .map(|count| count > 0)
+        .unwrap_or(false);
+
+    if !has_command_type {
+        conn.execute(
+            "ALTER TABLE processes ADD COLUMN command_type TEXT NOT NULL DEFAULT 'executable'",
+            [],
+        )?;
+    }
+
     // 初始化默认设置（仅当设置不存在时）
     init_default_settings(&conn, &app);
 
@@ -126,7 +143,7 @@ pub fn set_download_setting(
 
 // ============ Process Config CRUD Operations ============
 
-use crate::core::{ProcessConfig, ProcessMode};
+use crate::core::{CommandType, ProcessConfig, ProcessMode};
 
 /// 保存进程配置到数据库
 pub fn save_process_config(conn: &Connection, config: &ProcessConfig) -> Result<(), String> {
@@ -134,14 +151,20 @@ pub fn save_process_config(conn: &Connection, config: &ProcessConfig) -> Result<
         ProcessMode::Fork => "fork",
         ProcessMode::Import => "import",
     };
+    let command_type = match config.command_type {
+        CommandType::Executable => "executable",
+        CommandType::Shell => "shell",
+    };
     let args_json = serde_json::to_string(&config.args).map_err(|e| e.to_string())?;
     let env_json = serde_json::to_string(&config.env).map_err(|e| e.to_string())?;
 
     conn.execute(
-        "INSERT INTO processes (id, name, mode, command, args, working_dir, source_path, env, auto_restart, auto_start, created_at)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)
+        "INSERT INTO processes (id, name, mode, command_type, command, args, working_dir, source_path, env, auto_restart, auto_start, created_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12)
          ON CONFLICT(id) DO UPDATE SET
             name = excluded.name,
+            command_type = excluded.command_type,
+            command = excluded.command,
             args = excluded.args,
             auto_restart = excluded.auto_restart,
             auto_start = excluded.auto_start",
@@ -149,6 +172,7 @@ pub fn save_process_config(conn: &Connection, config: &ProcessConfig) -> Result<
             config.id,
             config.name,
             mode,
+            command_type,
             config.command,
             args_json,
             config.working_dir,
@@ -194,7 +218,7 @@ pub fn init_process_manager_from_db(
 pub fn load_all_process_configs(conn: &Connection) -> Result<Vec<ProcessConfig>, String> {
     let mut stmt = conn
         .prepare(
-            "SELECT id, name, mode, command, args, working_dir, source_path, env, auto_restart, auto_start, created_at
+            "SELECT id, name, mode, command_type, command, args, working_dir, source_path, env, auto_restart, auto_start, created_at
              FROM processes ORDER BY created_at DESC",
         )
         .map_err(|e| e.to_string())?;
@@ -204,19 +228,26 @@ pub fn load_all_process_configs(conn: &Connection) -> Result<Vec<ProcessConfig>,
             let id: String = row.get(0)?;
             let name: String = row.get(1)?;
             let mode_str: String = row.get(2)?;
-            let command: String = row.get(3)?;
-            let args_json: String = row.get(4)?;
-            let working_dir: String = row.get(5)?;
-            let source_path: Option<String> = row.get(6)?;
-            let env_json: String = row.get(7)?;
-            let auto_restart: i32 = row.get(8)?;
-            let auto_start: i32 = row.get(9)?;
-            let created_at: i64 = row.get(10)?;
+            let command_type_str: String = row.get(3)?;
+            let command: String = row.get(4)?;
+            let args_json: String = row.get(5)?;
+            let working_dir: String = row.get(6)?;
+            let source_path: Option<String> = row.get(7)?;
+            let env_json: String = row.get(8)?;
+            let auto_restart: i32 = row.get(9)?;
+            let auto_start: i32 = row.get(10)?;
+            let created_at: i64 = row.get(11)?;
 
             let mode = if mode_str == "fork" {
                 ProcessMode::Fork
             } else {
                 ProcessMode::Import
+            };
+
+            let command_type = if command_type_str == "shell" {
+                CommandType::Shell
+            } else {
+                CommandType::Executable
             };
 
             let args: Vec<String> = serde_json::from_str(&args_json).unwrap_or_default();
@@ -227,6 +258,7 @@ pub fn load_all_process_configs(conn: &Connection) -> Result<Vec<ProcessConfig>,
                 id,
                 name,
                 mode,
+                command_type,
                 command,
                 args,
                 working_dir,

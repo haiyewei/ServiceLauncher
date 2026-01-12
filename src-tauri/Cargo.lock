@@ -3570,7 +3570,7 @@ dependencies = [
 
 [[package]]
 name = "servicelauncher"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "base64 0.22.1",
  "chrono",
@@ -3595,6 +3595,7 @@ dependencies = [
  "uuid",
  "windows",
  "windows-sys 0.59.0",
+ "winreg 0.55.0",
 ]
 
 [[package]]

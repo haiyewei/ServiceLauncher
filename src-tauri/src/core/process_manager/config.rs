@@ -5,8 +5,8 @@ use std::path::Path;
 use tauri::AppHandle;
 
 use super::state::{ProcessManager, ProcessOutput};
-use super::types::{ProcessConfig, ProcessMode};
-use super::utils::{copy_dir_recursive, current_timestamp, find_executable, get_processes_dir};
+use super::types::{CommandType, ProcessConfig, ProcessMode};
+use super::utils::{copy_dir_recursive, current_timestamp, get_processes_dir};
 use crate::storage::{delete_process_config, save_process_config, DbState};
 
 /// Fork 模式添加进程
@@ -15,28 +15,51 @@ pub fn add_process_fork(
     state: tauri::State<ProcessManager>,
     db_state: tauri::State<DbState>,
     name: String,
-    executable_path: String,
+    working_dir: String,
+    executable_path: Option<String>,
     args: Vec<String>,
     auto_restart: bool,
     auto_start: bool,
+    command_type: Option<String>,
 ) -> Result<ProcessConfig, String> {
-    let exe_path = Path::new(&executable_path);
-    if !exe_path.exists() {
-        return Err("Executable file not found".to_string());
+    // 解析命令类型
+    let cmd_type = match command_type.as_deref() {
+        Some("shell") => CommandType::Shell,
+        _ => CommandType::Executable,
+    };
+
+    // 验证工作目录存在
+    let working_dir_path = Path::new(&working_dir);
+    if !working_dir_path.exists() {
+        return Err("Working directory not found".to_string());
+    }
+    if !working_dir_path.is_dir() {
+        return Err("Working directory path is not a directory".to_string());
     }
 
-    let working_dir = exe_path
-        .parent()
-        .ok_or("Invalid executable path")?
-        .to_string_lossy()
-        .to_string();
+    // 如果是 Executable 模式且提供了可执行文件路径，验证其存在
+    // Shell 模式下不验证路径，因为命令会通过 shell 解析
+    if cmd_type == CommandType::Executable {
+        if let Some(ref exe_path_str) = executable_path {
+            if !exe_path_str.is_empty() {
+                let exe_path = Path::new(exe_path_str);
+                if !exe_path.exists() {
+                    return Err("Executable file not found".to_string());
+                }
+            }
+        }
+    }
+
+    // command 字段：如果提供了 executable_path 则使用它，否则为空字符串
+    let command = executable_path.unwrap_or_default();
 
     let id = uuid::Uuid::new_v4().to_string();
     let config = ProcessConfig {
         id: id.clone(),
         name,
         mode: ProcessMode::Fork,
-        command: executable_path,
+        command_type: cmd_type,
+        command,
         args,
         working_dir,
         source_path: None,
@@ -67,10 +90,18 @@ pub fn add_process_import(
     db_state: tauri::State<DbState>,
     name: String,
     source_folder: String,
+    executable_path: Option<String>,
     args: Vec<String>,
     auto_restart: bool,
     auto_start: bool,
+    command_type: Option<String>,
 ) -> Result<ProcessConfig, String> {
+    // 解析命令类型
+    let cmd_type = match command_type.as_deref() {
+        Some("shell") => CommandType::Shell,
+        _ => CommandType::Executable,
+    };
+
     let source_path = Path::new(&source_folder);
     if !source_path.exists() || !source_path.is_dir() {
         return Err("Source folder not found".to_string());
@@ -82,13 +113,28 @@ pub fn add_process_import(
 
     copy_dir_recursive(source_path, &target_dir)?;
 
-    let executable = find_executable(&target_dir).ok_or("No executable found in the folder")?;
+    // 如果是 Executable 模式且提供了可执行文件路径，验证其存在
+    // Shell 模式下不验证路径，因为命令会通过 shell 解析
+    if cmd_type == CommandType::Executable {
+        if let Some(ref exe_path_str) = executable_path {
+            if !exe_path_str.is_empty() {
+                let exe_path = Path::new(exe_path_str);
+                if !exe_path.exists() {
+                    return Err("Executable file not found".to_string());
+                }
+            }
+        }
+    }
+
+    // command 字段：如果提供了 executable_path 则使用它，否则为空字符串
+    let command = executable_path.unwrap_or_default();
 
     let config = ProcessConfig {
         id: id.clone(),
         name,
         mode: ProcessMode::Import,
-        command: executable.to_string_lossy().to_string(),
+        command_type: cmd_type,
+        command,
         args,
         working_dir: target_dir.to_string_lossy().to_string(),
         source_path: Some(source_folder),
@@ -114,7 +160,7 @@ pub fn add_process_import(
 /// 删除进程配置
 #[tauri::command]
 pub fn remove_process(
-    app: AppHandle,
+    _app: AppHandle,
     state: tauri::State<ProcessManager>,
     db_state: tauri::State<DbState>,
     id: String,
@@ -131,19 +177,12 @@ pub fn remove_process(
         let _ = running.child.kill();
     }
 
-    let config = manager
+    let _config = manager
         .configs
         .remove(&id)
         .ok_or_else(|| "Process not found".to_string())?;
 
     manager.outputs.remove(&id);
-
-    if config.mode == ProcessMode::Import {
-        if let Ok(processes_dir) = get_processes_dir(&app) {
-            let target_dir = processes_dir.join(&id);
-            let _ = std::fs::remove_dir_all(target_dir);
-        }
-    }
 
     Ok(())
 }
@@ -155,10 +194,54 @@ pub fn update_process(
     db_state: tauri::State<DbState>,
     id: String,
     name: String,
+    working_dir: Option<String>,
+    executable_path: Option<String>,
     args: Vec<String>,
     auto_restart: bool,
     auto_start: bool,
+    command_type: Option<String>,
 ) -> Result<ProcessConfig, String> {
+    // 解析命令类型
+    let cmd_type = match command_type.as_deref() {
+        Some("shell") => Some(CommandType::Shell),
+        Some("executable") => Some(CommandType::Executable),
+        _ => None, // 不更新命令类型
+    };
+
+    // 如果提供了工作目录，验证其存在
+    if let Some(ref wd) = working_dir {
+        let working_dir_path = Path::new(wd);
+        if !working_dir_path.exists() {
+            return Err("Working directory not found".to_string());
+        }
+        if !working_dir_path.is_dir() {
+            return Err("Working directory path is not a directory".to_string());
+        }
+    }
+
+    // 获取当前配置以确定命令类型
+    let current_cmd_type = {
+        let manager = state.lock().map_err(|e| e.to_string())?;
+        let config = manager
+            .configs
+            .get(&id)
+            .ok_or_else(|| "Process not found".to_string())?;
+        cmd_type.clone().unwrap_or(config.command_type.clone())
+    };
+
+    // 如果是 Executable 模式且提供了可执行文件路径，验证其存在
+    // Shell 模式下不验证路径，因为命令会通过 shell 解析
+    if current_cmd_type == CommandType::Executable {
+        if let Some(ref exe_path_str) = executable_path {
+            if !exe_path_str.is_empty() {
+                let exe_path = Path::new(exe_path_str);
+                if !exe_path.exists() {
+                    return Err("Executable file not found".to_string());
+                }
+            }
+        }
+    }
+
     let mut manager = state.lock().map_err(|e| e.to_string())?;
 
     let config = manager
@@ -170,6 +253,21 @@ pub fn update_process(
     config.args = args;
     config.auto_restart = auto_restart;
     config.auto_start = auto_start;
+
+    // 更新命令类型（如果提供）
+    if let Some(ct) = cmd_type {
+        config.command_type = ct;
+    }
+
+    // 更新工作目录（如果提供）
+    if let Some(wd) = working_dir {
+        config.working_dir = wd;
+    }
+
+    // 更新可执行文件路径（如果提供）
+    if let Some(exe_path) = executable_path {
+        config.command = exe_path;
+    }
 
     // 保存到数据库
     let conn = db_state.0.lock().map_err(|e| e.to_string())?;

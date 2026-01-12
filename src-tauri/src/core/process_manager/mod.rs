@@ -15,7 +15,9 @@ mod types;
 mod utils;
 
 // 导出类型
-pub use types::{ProcessConfig, ProcessInfo, ProcessMode, ProcessOutputEvent, ProcessStatus};
+pub use types::{
+    CommandType, ProcessConfig, ProcessInfo, ProcessMode, ProcessOutputEvent, ProcessStatus,
+};
 
 // 导出状态管理
 pub use state::{

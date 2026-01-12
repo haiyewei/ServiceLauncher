@@ -1,153 +1,231 @@
 <div class="process-container">
-    <div class="process-content">
-        @if (processService.loading()) {
-        <div class="loading-state">
-            <mat-spinner diameter="40"></mat-spinner>
-        </div>
-        } @else if (processService.processes().length === 0) {
-        <mat-card class="empty-card">
-            <mat-card-content>
-                <div class="empty-state">
-                    <mat-icon>terminal</mat-icon>
-                    <p>{{ "process.empty" | translate }}</p>
-                    <button mat-stroked-button (click)="openAddDialog('fork')">
-                        <mat-icon>add</mat-icon>
-                        {{ "process.addFirst" | translate }}
-                    </button>
-                </div>
-            </mat-card-content>
-        </mat-card>
-        } @else {
-        <mat-card>
-            <mat-card-header>
-                <mat-icon mat-card-avatar>terminal</mat-icon>
-                <mat-card-title>{{ "process.list" | translate }}</mat-card-title>
-                <div class="header-actions">
-                    <button mat-raised-button color="primary" [matMenuTriggerFor]="addMenu">
-                        <mat-icon>add</mat-icon>
-                        <span class="btn-text">{{ "process.add" | translate }}</span>
-                    </button>
-                    <mat-menu #addMenu="matMenu">
-                        <button mat-menu-item (click)="openAddDialog('fork')">
-                            <mat-icon>call_split</mat-icon>
-                            <span>{{ "process.forkMode" | translate }}</span>
-                        </button>
-                        <button mat-menu-item (click)="openAddDialog('import')">
-                            <mat-icon>file_upload</mat-icon>
-                            <span>{{ "process.importMode" | translate }}</span>
-                        </button>
-                    </mat-menu>
-                </div>
-            </mat-card-header>
-            <mat-card-content>
-                <!-- 桌面端表格视图 -->
-                <div class="table-view">
-                    <table mat-table [dataSource]="processService.processes()">
-                        <ng-container matColumnDef="status">
-                            <th mat-header-cell *matHeaderCellDef>{{ "process.status" | translate }}</th>
-                            <td mat-cell *matCellDef="let process">
-                                <mat-icon [class]="'status-' + process.status">
-                                    {{ getStatusIcon(process.status) }}
-                                </mat-icon>
-                            </td>
-                        </ng-container>
+  <div class="process-content">
+    @if (processService.loading()) {
+      <div class="loading-state">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+    } @else if (processService.processes().length === 0) {
+      <mat-card class="empty-card">
+        <mat-card-content>
+          <div class="empty-state">
+            <mat-icon>terminal</mat-icon>
+            <p>{{ "process.empty" | translate }}</p>
+            <button mat-stroked-button (click)="openAddDialog('fork')">
+              <mat-icon>add</mat-icon>
+              {{ "process.addFirst" | translate }}
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    } @else {
+      <mat-card>
+        <mat-card-header>
+          <mat-icon mat-card-avatar>terminal</mat-icon>
+          <mat-card-title>{{ "process.list" | translate }}</mat-card-title>
+          <div class="header-actions">
+            <button
+              mat-raised-button
+              color="primary"
+              [matMenuTriggerFor]="addMenu"
+            >
+              <mat-icon>add</mat-icon>
+              <span class="btn-text">{{ "process.add" | translate }}</span>
+            </button>
+            <mat-menu #addMenu="matMenu">
+              <button mat-menu-item (click)="openAddDialog('fork')">
+                <mat-icon>call_split</mat-icon>
+                <span>{{ "process.forkMode" | translate }}</span>
+              </button>
+              <button mat-menu-item (click)="openAddDialog('import')">
+                <mat-icon>file_upload</mat-icon>
+                <span>{{ "process.importMode" | translate }}</span>
+              </button>
+            </mat-menu>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <!-- 桌面端表格视图 -->
+          <div class="table-view">
+            <table mat-table [dataSource]="processService.processes()">
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ "process.status" | translate }}
+                </th>
+                <td mat-cell *matCellDef="let process">
+                  <mat-icon [class]="'status-' + process.status">
+                    {{ getStatusIcon(process.status) }}
+                  </mat-icon>
+                </td>
+              </ng-container>
 
-                        <ng-container matColumnDef="name">
-                            <th mat-header-cell *matHeaderCellDef>{{ "process.name" | translate }}</th>
-                            <td mat-cell *matCellDef="let process">{{ process.name }}</td>
-                        </ng-container>
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ "process.name" | translate }}
+                </th>
+                <td mat-cell *matCellDef="let process">{{ process.name }}</td>
+              </ng-container>
 
-                        <ng-container matColumnDef="command">
-                            <th mat-header-cell *matHeaderCellDef>{{ "process.command" | translate }}</th>
-                            <td mat-cell *matCellDef="let process" class="command-cell">
-                                <span class="command-text"
-                                    [matTooltip]="process.command + ' ' + process.args.join(' ')">
-                                    {{ process.command }}
-                                </span>
-                            </td>
-                        </ng-container>
+              <ng-container matColumnDef="command">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ "process.command" | translate }}
+                </th>
+                <td mat-cell *matCellDef="let process" class="command-cell">
+                  <span
+                    class="command-text"
+                    [matTooltip]="
+                      process.command + ' ' + process.args.join(' ')
+                    "
+                  >
+                    {{ process.command }}
+                  </span>
+                </td>
+              </ng-container>
 
-                        <ng-container matColumnDef="mode">
-                            <th mat-header-cell *matHeaderCellDef>{{ "process.mode" | translate }}</th>
-                            <td mat-cell *matCellDef="let process">
-                                <mat-chip>{{ process.mode }}</mat-chip>
-                            </td>
-                        </ng-container>
+              <ng-container matColumnDef="mode">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ "process.mode" | translate }}
+                </th>
+                <td mat-cell *matCellDef="let process">
+                  <mat-chip>{{ process.mode }}</mat-chip>
+                </td>
+              </ng-container>
 
-                        <ng-container matColumnDef="pid">
-                            <th mat-header-cell *matHeaderCellDef>PID</th>
-                            <td mat-cell *matCellDef="let process">
-                                {{ process.pid || '-' }}
-                            </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="actions">
-                            <th mat-header-cell *matHeaderCellDef>{{ "process.actions" | translate }}</th>
-                            <td mat-cell *matCellDef="let process">
-                                <button mat-icon-button
-                                    [matTooltip]="process.status === 'running' ? ('process.stop' | translate) : ('process.start' | translate)"
-                                    (click)="toggleProcess(process)">
-                                    <mat-icon>{{ process.status === 'running' ? 'stop' : 'play_arrow' }}</mat-icon>
-                                </button>
-                                <button mat-icon-button [matTooltip]="'process.viewOutput' | translate"
-                                    (click)="openOutputDialog(process)" [class.has-output]="process.has_output">
-                                    <mat-icon>terminal</mat-icon>
-                                </button>
-                                <button mat-icon-button [matTooltip]="'process.edit' | translate"
-                                    (click)="openEditDialog(process)">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                                <button mat-icon-button color="warn" [matTooltip]="'process.remove' | translate"
-                                    (click)="removeProcess(process.id)">
-                                    <mat-icon>delete</mat-icon>
-                                </button>
-                            </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                </div>
-
-                <!-- 移动端列表视图 -->
-                <div class="list-view">
-                    @for (process of processService.processes(); track process.id) {
-                    <div class="process-item">
-                        <div class="process-info">
-                            <div class="process-header">
-                                <mat-icon [class]="'status-' + process.status">
-                                    {{ getStatusIcon(process.status) }}
-                                </mat-icon>
-                                <span class="process-name">{{ process.name }}</span>
-                                <mat-chip>{{ process.mode }}</mat-chip>
-                            </div>
-                            <div class="process-details">
-                                <span class="command-text">{{ process.command }}</span>
-                                @if (process.pid) {
-                                <span class="pid">PID: {{ process.pid }}</span>
-                                }
-                            </div>
-                        </div>
-                        <div class="process-actions">
-                            <button mat-icon-button (click)="toggleProcess(process)">
-                                <mat-icon>{{ process.status === 'running' ? 'stop' : 'play_arrow' }}</mat-icon>
-                            </button>
-                            <button mat-icon-button (click)="openOutputDialog(process)"
-                                [class.has-output]="process.has_output">
-                                <mat-icon>terminal</mat-icon>
-                            </button>
-                            <button mat-icon-button (click)="openEditDialog(process)">
-                                <mat-icon>edit</mat-icon>
-                            </button>
-                            <button mat-icon-button color="warn" (click)="removeProcess(process.id)">
-                                <mat-icon>delete</mat-icon>
-                            </button>
-                        </div>
-                    </div>
+              <ng-container matColumnDef="commandType">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ "process.commandType" | translate }}
+                </th>
+                <td mat-cell *matCellDef="let process">
+                  <mat-chip
+                    [class]="
+                      'command-type-' + (process.command_type || 'executable')
+                    "
+                  >
+                    @if (process.command_type === "shell") {
+                      <mat-icon class="chip-icon">code</mat-icon>
+                      {{ "process.commandTypeShellShort" | translate }}
+                    } @else {
+                      <mat-icon class="chip-icon">terminal</mat-icon>
+                      {{ "process.commandTypeExecutableShort" | translate }}
                     }
+                  </mat-chip>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="pid">
+                <th mat-header-cell *matHeaderCellDef>PID</th>
+                <td mat-cell *matCellDef="let process">
+                  {{ process.pid || "-" }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ "process.actions" | translate }}
+                </th>
+                <td mat-cell *matCellDef="let process">
+                  <button
+                    mat-icon-button
+                    [matTooltip]="
+                      process.status === 'running'
+                        ? ('process.stop' | translate)
+                        : ('process.start' | translate)
+                    "
+                    (click)="toggleProcess(process)"
+                  >
+                    <mat-icon>{{
+                      process.status === "running" ? "stop" : "play_arrow"
+                    }}</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    [matTooltip]="'process.viewOutput' | translate"
+                    (click)="openOutputDialog(process)"
+                    [class.has-output]="process.has_output"
+                  >
+                    <mat-icon>terminal</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    [matTooltip]="'process.edit' | translate"
+                    (click)="openEditDialog(process)"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    [matTooltip]="'process.remove' | translate"
+                    (click)="removeProcess(process.id)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+
+          <!-- 移动端列表视图 -->
+          <div class="list-view">
+            @for (process of processService.processes(); track process.id) {
+              <div class="process-item">
+                <div class="process-info">
+                  <div class="process-header">
+                    <mat-icon [class]="'status-' + process.status">
+                      {{ getStatusIcon(process.status) }}
+                    </mat-icon>
+                    <span class="process-name">{{ process.name }}</span>
+                    <mat-chip>{{ process.mode }}</mat-chip>
+                    <mat-chip
+                      [class]="
+                        'command-type-' + (process.command_type || 'executable')
+                      "
+                    >
+                      @if (process.command_type === "shell") {
+                        <mat-icon class="chip-icon">code</mat-icon>
+                      } @else {
+                        <mat-icon class="chip-icon">terminal</mat-icon>
+                      }
+                    </mat-chip>
+                  </div>
+                  <div class="process-details">
+                    <span class="command-text">{{ process.command }}</span>
+                    @if (process.pid) {
+                      <span class="pid">PID: {{ process.pid }}</span>
+                    }
+                  </div>
                 </div>
-            </mat-card-content>
-        </mat-card>
-        }
-    </div>
+                <div class="process-actions">
+                  <button mat-icon-button (click)="toggleProcess(process)">
+                    <mat-icon>{{
+                      process.status === "running" ? "stop" : "play_arrow"
+                    }}</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    (click)="openOutputDialog(process)"
+                    [class.has-output]="process.has_output"
+                  >
+                    <mat-icon>terminal</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="openEditDialog(process)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="removeProcess(process.id)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
 </div>

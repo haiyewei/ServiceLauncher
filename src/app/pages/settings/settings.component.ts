@@ -8,4 +8,4 @@ import { SystemSettingsCardComponent } from "./system-settings-card/system-setti
   styleUrl: "./settings.component.scss",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsComponent { }
+export class SettingsComponent {}
